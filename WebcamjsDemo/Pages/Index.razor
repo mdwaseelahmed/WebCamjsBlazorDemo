@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime
+
+<button @onclick="Capture">Capture</button>
+
+<div class="col-md-2"></div>
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">Camera</div>
+        <div class="panel-body">
+            <div id="camera"></div>
+            <!-- A button for taking snaps -->
+        </div>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">Captured Photo</div>
+        <div class="panel-body">
+            <div id="results">Your captured image will appear here...</div>
+        </div>
+        <br />
+        <br />
+    </div>
+</div>
+
+@foreach (var item in stringList)
+{
+    <img src="@item" alt="Alternate Text" width="200px;" height="200px;" />
+}
+
+
+
+@code
+{
+    List<string> stringList = new List<string>();
+    string aa = "";
+    public async void Capture()
+    {
+        stringList.Add(await JSRuntime.InvokeAsync<string>("take_snapshot"));
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JSRuntime.InvokeVoidAsync("ready", this);
+        }
+    }
+}
+
+
+
